@@ -46,7 +46,7 @@ fun MainScreen() {
         Button(onClick = {
             // Launch WebViewActivity with the URL
             val intent = Intent(context, WebViewActivity::class.java)
-            intent.putExtra("url", "https://www.example.com")
+            intent.putExtra("url", "https://www.atlasobscura.com/")
             context.startActivity(intent)
         }) {
             Text("Open WebView")
