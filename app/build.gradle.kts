@@ -2,9 +2,13 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    //id("com.google.devtools.ksp")
+    id("kotlin-kapt")
+    id("kotlin-parcelize")
 }
 
 android {
+    buildFeatures.buildConfig = true
     namespace = "com.example.exportedwebviewwithcompose"
     compileSdk = 34
 
@@ -19,8 +23,12 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField("String", "API_KEY", "\"YOUR_DEBUG_API_KEY\"")
+        }
         release {
             isMinifyEnabled = true
+            buildConfigField("String", "API_KEY", "\"YOUR_RELEASE_API_KEY\"")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -44,6 +52,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
     implementation("androidx.activity:activity-compose:1.8.2")
     implementation(platform("androidx.compose:compose-bom:2023.03.00"))
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
@@ -56,4 +65,15 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
     implementation("androidx.webkit:webkit:1.8.0")
+    implementation("androidx.security:security-crypto:1.1.0-alpha06")
+
+    val room_version = "2.5.0"
+
+    implementation("androidx.room:room-runtime:$room_version")
+    kapt("androidx.room:room-compiler:$room_version")
+    //ksp("androidx.room:room-compiler:$room_version") // For Kotlin Symbol Processing (KSP)
+    //annotationProcessor("androidx.room:room-compiler:$room_version") // For Java annotationProcessor
+
+    // Optional dependencies
+    implementation("androidx.room:room-ktx:$room_version")
 }

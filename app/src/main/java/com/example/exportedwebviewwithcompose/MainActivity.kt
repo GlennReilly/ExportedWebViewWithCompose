@@ -1,5 +1,6 @@
 package com.example.exportedwebviewwithcompose
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -16,7 +17,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKey
 import com.example.exportedwebviewwithcompose.ui.theme.ExportedWebViewWithComposeTheme
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,6 +41,13 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MainScreen() {
+    val viewModel = viewModel<MainViewModel>()
+    val destinationURL = viewModel.getDestinationURL()
+    val context: Context = LocalContext.current
+
+    writeToEncryptedSharedPrefs(context, destinationURL)
+    writeToStandardSharedPrefs(context, destinationURL)
+
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -44,14 +55,38 @@ fun MainScreen() {
     ) {
         val context = LocalContext.current
         Button(onClick = {
-            // Launch WebViewActivity with the URL
             val intent = Intent(context, WebViewActivity::class.java)
-            intent.putExtra("url", "https://www.atlasobscura.com/")
+            intent.putExtra("url", destinationURL)
             context.startActivity(intent)
         }) {
             Text("Open WebView")
         }
     }
+}
+
+@Composable
+private fun writeToStandardSharedPrefs(context: Context, destinationURL: String) {
+    val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+    val editor = sharedPreferences.edit()
+    editor.putString("destinationURL", destinationURL)
+    editor.apply()
+}
+
+@Composable
+private fun writeToEncryptedSharedPrefs(context: Context, destinationURL: String) {
+    val masterKeyAlias = MasterKey.Builder(context)
+        .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+        .build()
+    val encryptedSharedPreferences = EncryptedSharedPreferences.create(
+        context,
+        "my_encrypted_prefs",
+        masterKeyAlias,
+        EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+        EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+    )
+    val encryptedSharedPreferencesEditor = encryptedSharedPreferences.edit()
+    encryptedSharedPreferencesEditor.putString("destinationURL", destinationURL)
+    encryptedSharedPreferencesEditor.apply()
 }
 
 @Preview(showBackground = true)
