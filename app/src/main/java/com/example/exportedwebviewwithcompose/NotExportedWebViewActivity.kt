@@ -2,8 +2,6 @@ package com.example.exportedwebviewwithcompose
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
-import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.ComponentActivity
@@ -16,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import com.example.exportedwebviewwithcompose.ui.theme.ExportedWebViewWithComposeTheme
 
-class WebViewActivity : ComponentActivity() {
+class NotExportedWebViewActivity : ComponentActivity() {
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,7 +25,7 @@ class WebViewActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val url = intent.getStringExtra("url")
-                    WebViewScreen(url = url ?: "")
+                    WebViewScreen2(url = url ?: "")
                 }
             }
         }
@@ -35,7 +33,7 @@ class WebViewActivity : ComponentActivity() {
 }
 
 @Composable
-fun WebViewScreen(url: String) {
+fun WebViewScreen2(url: String) {
     AndroidView(factory = { context ->
         WebView(context).apply {
             webViewClient = WebViewClient()

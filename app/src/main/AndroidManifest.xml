@@ -28,7 +28,13 @@
         </activity>
 
         <activity
-            android:name=".WebViewActivity"
+            android:name=".ExportedWebViewActivity"
+            android:exported="true" />
+        <activity
+            android:name=".NotExportedWebViewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ExportedAndKeptWebViewActivity"
             android:exported="true" />
     </application>
 

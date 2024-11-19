@@ -43,10 +43,18 @@ class MainActivity : ComponentActivity() {
 fun MainScreen() {
     val viewModel = viewModel<MainViewModel>()
     val destinationURL = viewModel.getDestinationURL()
+    val destinationURL2 = viewModel.getDestinationURL2()
+    val destinationURL3 = viewModel.getDestinationURL3()
     val context: Context = LocalContext.current
 
     writeToEncryptedSharedPrefs(context, destinationURL)
     writeToStandardSharedPrefs(context, destinationURL)
+
+    writeToEncryptedSharedPrefs(context, destinationURL2)
+    writeToStandardSharedPrefs(context, destinationURL2)
+
+    writeToEncryptedSharedPrefs(context, destinationURL3)
+    writeToStandardSharedPrefs(context, destinationURL3)
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -55,11 +63,27 @@ fun MainScreen() {
     ) {
         val context = LocalContext.current
         Button(onClick = {
-            val intent = Intent(context, WebViewActivity::class.java)
+            val intent = Intent(context, ExportedWebViewActivity::class.java)
             intent.putExtra("url", destinationURL)
             context.startActivity(intent)
         }) {
-            Text("Open WebView")
+            Text("Open ExportedWebViewActivity")
+        }
+
+        Button(onClick = {
+            val intent = Intent(context, NotExportedWebViewActivity::class.java)
+            intent.putExtra("url", destinationURL2)
+            context.startActivity(intent)
+        }) {
+            Text("Open NotExportedWebViewActivity")
+        }
+
+        Button(onClick = {
+            val intent = Intent(context, ExportedAndKeptWebViewActivity::class.java)
+            intent.putExtra("url", destinationURL3)
+            context.startActivity(intent)
+        }) {
+            Text("Open ExportedAndKeptWebViewActivity")
         }
     }
 }
